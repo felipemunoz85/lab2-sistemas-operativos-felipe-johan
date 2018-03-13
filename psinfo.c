@@ -25,13 +25,16 @@ typedef struct {
 } process_info;
 
 process_info setProcessInfo(FILE *file);
+void imprimeResultado(process_info info);
 
 char mode[4];
 
 int main(int argc, char *argv[]){
   if(argc < 2){
-    printf("Número de argumentos no válido\n");
-    return 1;
+    printf("Error al ingresar los argumentos!!\n");
+    printf("Debe ingresar por lo menos un PID de proceso\n");
+    printf("o los parametros -l, -r con la lista procesos\n");
+    exit(1);
   } else {
     if(strcmp(argv[1], "-l") == 0){
       strcpy(mode, "list");
@@ -41,8 +44,8 @@ int main(int argc, char *argv[]){
       if(argc == 2){
         strcpy(mode, "read");
       } else {
-        printf("Argumento no válido\n");
-        return 1;
+        printf("Número de argumentos no válidos\n");
+        exit(1);
       }
     }
   }
@@ -98,19 +101,22 @@ int main(int argc, char *argv[]){
     }
     fclose(fileout);
   } else if(strcmp(mode, "read") == 0){
-    printf("Nombre del proceso: %s \n", processes[0].name);
-    printf("Estado: %s", processes[0].state);
-    printf("Tamaño total de la imagen de memoria: %s \n", processes[0].vmpeak);
-    printf("Tamaño de la memoria en la región TEXT: %s \n", processes[0].vmexe);
-    printf("Tamaño de la memoria en la región DATA: %s \n", processes[0].vmdata);
-    printf("Tamaño de la memoria en la región STACK: %s \n", processes[0].vmstk);
-    printf("Número de cambios de contexto realizados (voluntarios - no voluntarios): %s  -  %s", processes[0].voluntary_ctxt_switches,  processes[0].nonvoluntary_ctxt_switches);
-    printf("\n");
+    imprimeResultado(processes[0]);
   }
   return 0;
 }
 
 //Implementacion de funciones
+void imprimeResultado(process_info info){
+  printf("Nombre del proceso: %s \n", info.name);
+  printf("Estado: %s", info.state);
+  printf("Tamaño total de la imagen de memoria: %s \n", info.vmpeak);
+  printf("Tamaño de la memoria en la región TEXT: %s \n", info.vmexe);
+  printf("Tamaño de la memoria en la región DATA: %s \n", info.vmdata);
+  printf("Tamaño de la memoria en la región STACK: %s \n", info.vmstk);
+  printf("Número de cambios de contexto realizados (voluntarios - no voluntarios): %s  -  %s", info.voluntary_ctxt_switches,  info.nonvoluntary_ctxt_switches);
+  printf("\n");
+}
 
 process_info setProcessInfo(FILE *file){
   process_info process;
